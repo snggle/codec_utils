@@ -1,0 +1,20 @@
+name: codec_utils
+description: "Dart package containing utility methods for data encoding and decoding"
+version: 0.0.1
+
+environment:
+  sdk: ">=3.2.6"
+
+dependencies:
+  # A Dart package that helps to implement value based equality without needing to explicitly override == and hashCode.
+  # https://pub.dev/packages/equatable
+  equatable: 2.0.5
+
+  # Small, easy to use and extensible logger which prints beautiful logs.
+  # https://pub.dev/packages/logger
+  logger: 2.4.0
+
+dev_dependencies:
+  # A full featured library for writing and running Dart tests across platforms.
+  # https://pub.dev/packages/test
+  test: 1.25.5

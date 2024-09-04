@@ -1,0 +1,68 @@
+name: Version and tests check
+run-name: Version and tests check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  app-version-check:
+    runs-on: ubuntu-20.04
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - uses: actions/checkout@main
+        with:
+          ref: master
+      - name: Extract version from branch MASTER
+        run: |
+          if [ -d "scripts" ]; then
+            chmod -R 777 scripts
+            MASTER_BRANCH_VERSION="$(./scripts/version.sh)"
+            echo "MASTER_BRANCH_VERSION=$MASTER_BRANCH_VERSION" >> $GITHUB_ENV
+            echo "MASTER_BRANCH_VERSION: $MASTER_BRANCH_VERSION"
+          else
+            echo "Directory 'scripts' does not exist in MASTER branch. Skipping..."
+            echo "MASTER_BRANCH_VERSION=not_found" >> $GITHUB_ENV
+          fi
+      - uses: actions/checkout@main
+      - name: Extract version from branch WORKING
+        run: |
+          chmod -R 777 scripts
+          WORKING_BRANCH_VERSION="$(./scripts/version.sh)"
+          echo "WORKING_BRANCH_VERSION=$WORKING_BRANCH_VERSION" >> $GITHUB_ENV
+          echo "WORKING_BRANCH_VERSION: $WORKING_BRANCH_VERSION"
+      - name: Compare versions
+        run: |
+          echo "MASTER_BRANCH_VERSION: $MASTER_BRANCH_VERSION"
+          echo "WORKING_BRANCH_VERSION: $WORKING_BRANCH_VERSION"
+
+          if [ "$MASTER_BRANCH_VERSION" == "not_found" ]; then
+            echo "MASTER branch does not have a scripts directory. Skipping version comparison."
+            exit 0
+          fi
+
+          RESULT="$(./scripts/compare_versions.py $MASTER_BRANCH_VERSION $WORKING_BRANCH_VERSION)"
+          
+          if [ $RESULT == "True" ]; then
+            exit 0
+          fi
+          
+          echo "Working branch version isn't updated in file pubspec.yaml. Please update accordingly."
+          exit 1
+  run-unit-tests:
+    needs: app-version-check
+    runs-on: ubuntu-20.04
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - uses: actions/checkout@main
+      # https://github.com/marketplace/actions/flutter-action
+      - name: Extract flutter SDK version from FVM
+        run: echo "FLUTTER_SDK_VERSION=$(jq -r '.flutterSdkVersion' .fvm/fvm_config.json)" >> $GITHUB_ENV
+      - uses: subosito/flutter-action@main
+        with:
+          flutter-version: ${{ env.FLUTTER_SDK_VERSION }}
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test "test/unit" --null-assertions
