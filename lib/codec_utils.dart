@@ -31,6 +31,13 @@ export 'src/codecs/cbor/export.dart';
 ///  ```
 export 'src/codecs/hex/hex_codec.dart';
 
+/// Classes for encoding cosmos messages using minimal protobuf encoding.
+/// Usage:
+///  ```
+///  List<int> ProtobufEncoder.encode(1, protobufMessage);
+///  ```
+export 'src/codecs/protobuf/export.dart';
+
 ///  Provides static utility methods for encoding and decoding data using the Recursive Length Prefix (RLP) encoding scheme.
 ///  Usage:
 ///   ```
