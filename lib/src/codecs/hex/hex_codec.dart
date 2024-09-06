@@ -3,14 +3,14 @@ import 'dart:typed_data';
 /// The [HexCodec] class is designed for encoding and decoding data using the hexadecimal encoding scheme.
 class HexCodec {
   /// Encodes the given [data] as a hexadecimal string.
-  static String encode(List<int> data, {bool lowercaseBool = true}) {
+  static String encode(List<int> data, {bool lowercaseBool = true, bool includePrefixBool = false}) {
     List<String> hexString = data.map((int e) => e.toRadixString(16).padLeft(2, '0')).toList();
     String hexData = hexString.join();
 
     if (lowercaseBool) {
-      return hexData.toLowerCase();
+      return includePrefixBool ? '0x${hexData.toLowerCase()}' : hexData.toLowerCase();
     } else {
-      return hexData.toUpperCase();
+      return includePrefixBool ? '0x${hexData.toUpperCase()}' : hexData.toUpperCase();
     }
   }
 
@@ -20,6 +20,10 @@ class HexCodec {
     if (hex.startsWith('0x')) {
       tmpHex = hex.substring(2);
     }
+    if (tmpHex.length % 2 != 0) {
+      tmpHex = '0$tmpHex';
+    }
+
     List<String> hexString = tmpHex.split('');
     List<String> hexPairs = <String>[];
 
@@ -32,5 +36,15 @@ class HexCodec {
     Uint8List hexPairsUint8List = Uint8List.fromList(hexPairsInt);
 
     return hexPairsUint8List;
+  }
+
+  /// Returns whether the given [hex] string is a valid hexadecimal string.
+  static bool isHex(String hex) {
+    try {
+      decode(hex);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

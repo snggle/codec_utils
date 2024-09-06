@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:cbor/cbor.dart';
 import 'package:codec_utils/codec_utils.dart';
-import 'package:codec_utils/src/codecs/hex/hex_codec.dart';
 import 'package:test/test.dart';
 
 void main() {
