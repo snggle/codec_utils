@@ -66,7 +66,7 @@ class CborEthSignRequest extends ACborTaggedObject {
       dataType: cborDataType != null ? CborEthSignDataType.fromCborIndex(cborDataType.value) : CborEthSignDataType.fromCborIndex(1),
       chainId: cborChainId?.value ?? 1,
       derivationPath: CborCryptoKeypath.fromCborMap(cborDerivationPath),
-      address: cborAddress != null ? '0x${HexCodec.encode(cborAddress.bytes)}' : null,
+      address: cborAddress != null ? HexCodec.encode(cborAddress.bytes, includePrefixBool: true) : null,
       origin: cborOrigin?.toString(),
     );
   }
