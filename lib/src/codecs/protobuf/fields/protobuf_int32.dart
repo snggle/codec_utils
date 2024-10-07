@@ -32,32 +32,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
+import 'package:codec_utils/src/codecs/protobuf/protobuf_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
+/// Represents a 32-bit integer value in Protobuf format.
+/// This class extends [AProtobufField] and is responsible for encoding 32-bit integers using Protobuf varint encoding scheme.
+class ProtobufInt32 extends AProtobufField {
+  /// The encoding type for this class, set to varint.
+  static const ProtobufWireType wireType = ProtobufWireType.varint;
+
+  /// The integer value stored by this Protobuf field.
+  final int value;
+
+  /// Constructs a [ProtobufInt32] object with the given integer value.
+  const ProtobufInt32(this.value);
+
+  /// Encodes the integer value along with its field number using varint encoding.
+  /// Handles both positive and negative values, applying ZigZag encoding for negative numbers.
+  @override
+  List<int> encode(int fieldNumber) {
     List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
 
-      if (protobufField == null) {
-        continue;
-      }
+    int tag = ProtobufUtils.createTag(fieldNumber, wireType);
+    result.addAll(ProtobufUtils.encodeVarint32(tag));
 
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
+    if (value.isNegative) {
+      BigInt zigzag = (BigInt.from(value) & ProtobufUtils.maxInt64) | ProtobufUtils.minInt64;
+      result.addAll(ProtobufUtils.encodeVarint64(zigzag));
+      return result;
     }
-    return Uint8List.fromList(result);
+    result.addAll(ProtobufUtils.encodeVarint32(value));
+
+    return result;
   }
+
+  /// Determines whether the value has the default value (0).
+  @override
+  bool hasDefaultValue() => value == 0;
+
+  @override
+  List<Object?> get props => <Object?>[value];
 }

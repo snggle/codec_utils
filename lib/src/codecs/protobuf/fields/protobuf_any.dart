@@ -36,28 +36,37 @@ import 'dart:typed_data';
 
 import 'package:codec_utils/codec_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
-    List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+/// Represents a Protobuf Any type, which can contain arbitrary Protobuf messages identified by their type URL.
+/// https://protobuf.dev/programming-guides/proto3/#any
+class ProtobufAny extends AProtobufObject {
+  /// A URL that uniquely identifies the type of the contained Protobuf message
+  final String typeUrl;
 
-      if (protobufField == null) {
-        continue;
-      }
+  /// Constructs a [ProtobufAny] object with the specified type URL.
+  const ProtobufAny({
+    required this.typeUrl,
+  });
 
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
-    }
-    return Uint8List.fromList(result);
+  /// Encodes the [ProtobufAny] message by encoding both the type URL
+  /// and the Protobuf message bytes using the given field number.
+  @override
+  List<int> encode(int fieldNumber) {
+    return ProtobufBytes(ProtobufEncoder.encode(
+      <int, AProtobufField>{
+        1: ProtobufString(typeUrl),
+        2: ProtobufBytes(toProtoBytes()),
+      },
+    )).encode(fieldNumber);
   }
+
+  /// Converts the contained message to a byte array in Protobuf format.
+  @override
+  Uint8List toProtoBytes() => Uint8List(0);
+
+  /// Converts the message to a JSON-compatible format, with the type URL included.
+  @override
+  Map<String, dynamic> toProtoJson() => <String, dynamic>{'@type': typeUrl};
+
+  @override
+  List<Object?> get props => <Object>[typeUrl];
 }

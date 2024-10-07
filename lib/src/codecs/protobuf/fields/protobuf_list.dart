@@ -32,32 +32,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
+/// Represents a list of Protobuf fields.
+/// This class extends [AProtobufField] and is responsible for encoding a list of Protobuf fields.
+class ProtobufList extends AProtobufField {
+  /// A list of [AProtobufField] objects to be encoded.
+  final List<AProtobufField> value;
+
+  /// Constructs a [ProtobufList] object with the given list of Protobuf fields.
+  const ProtobufList(this.value);
+
+  /// Encodes each field in the list using the provided field number.
+  @override
+  List<int> encode(int fieldNumber) {
     List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
-
-      if (protobufField == null) {
-        continue;
-      }
-
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
+    for (AProtobufField item in value) {
+      result.addAll(item.encode(fieldNumber));
     }
-    return Uint8List.fromList(result);
+    return result;
   }
+
+  /// Checks if the list is empty, indicating the default value.
+  @override
+  bool hasDefaultValue() => value.isEmpty;
+
+  @override
+  List<Object?> get props => <Object>[value];
 }

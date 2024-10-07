@@ -32,32 +32,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
-    List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+/// Abstract class representing a Protobuf enumeration with a value and a name.
+///
+/// https://protobuf.dev/programming-guides/enum/
+abstract class ProtobufEnum extends ProtobufInt32 {
+  /// The encoding type for this class, set to varint.
+  static const ProtobufWireType wireType = ProtobufWireType.varint;
 
-      if (protobufField == null) {
-        continue;
-      }
+  /// The name of the enumeration.
+  final String name;
 
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
+  /// Constructs a [ProtobufEnum] with the provided value and name.
+  const ProtobufEnum(int value, this.name) : super(value);
 
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
-    }
-    return Uint8List.fromList(result);
-  }
+  @override
+  List<Object?> get props => <Object?>[value, name];
 }

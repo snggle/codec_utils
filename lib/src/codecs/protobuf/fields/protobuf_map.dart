@@ -32,32 +32,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
+import 'package:codec_utils/src/codecs/protobuf/protobuf_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
+/// Represents a map of key-value pairs in Protobuf format.
+/// This class extends [AProtobufField] and is responsible for encoding a map of Protobuf fields.
+class ProtobufMap extends AProtobufField {
+  /// A map where both keys and values are [AProtobufField] objects.
+  final Map<AProtobufField, AProtobufField> value;
+
+  /// Constructs a [ProtobufMap] object with the given map of Protobuf fields.
+  const ProtobufMap(this.value);
+
+  /// Encodes each key-value pair in the map using the provided field number.
+  /// Both the key and value are encoded, with the length of the encoded data being calculated.
+  @override
+  List<int> encode(int fieldNumber) {
     List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+    for (MapEntry<AProtobufField, AProtobufField> entry in value.entries) {
+      List<int> encodedKey = entry.key.encode(fieldNumber);
+      List<int> encodedValue = entry.value.encode(fieldNumber);
 
-      if (protobufField == null) {
-        continue;
-      }
-
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
+      result
+        ..addAll(ProtobufUtils.encodeLength(fieldNumber, encodedKey.length + encodedValue.length))
+        ..addAll(encodedKey)
+        ..addAll(encodedValue);
     }
-    return Uint8List.fromList(result);
+    return result;
   }
+
+  /// Checks if the map is empty, indicating the default value.
+  @override
+  bool hasDefaultValue() => value.isEmpty;
+
+  @override
+  List<Object?> get props => <Object>[value];
 }

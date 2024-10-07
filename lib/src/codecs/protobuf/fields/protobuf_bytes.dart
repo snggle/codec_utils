@@ -32,32 +32,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
+import 'package:codec_utils/src/codecs/protobuf/protobuf_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
-    List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+/// Represents a byte array encoded in Protobuf format.
+/// This class extends [AProtobufField], storing a list of integers (bytes).
+class ProtobufBytes extends AProtobufField {
+  /// The wire type for this class, set to len for length-delimited fields.
+  static const ProtobufWireType wireType = ProtobufWireType.len;
 
-      if (protobufField == null) {
-        continue;
-      }
+  /// A list of integers representing the byte data.
+  final List<int> value;
 
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
+  /// Constructs a [ProtobufBytes] object with the given byte list.
+  const ProtobufBytes(this.value);
 
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
-    }
-    return Uint8List.fromList(result);
+  /// Encodes the field number and byte list into a Protobuf format.
+  @override
+  List<int> encode(int fieldNumber) {
+    List<int> result = <int>[
+      ...ProtobufUtils.encodeLength(fieldNumber, value.length),
+      ...value,
+    ];
+
+    return result;
   }
+
+  /// Checks if the byte list is empty, indicating the default value.
+  @override
+  bool hasDefaultValue() => value.isEmpty;
+
+  @override
+  List<Object?> get props => <Object?>[value];
 }

@@ -32,32 +32,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:codec_utils/codec_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
-    List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+/// Represents a string value in Protobuf format.
+/// This class extends [ProtobufBytes] and is responsible for encoding strings as UTF-8 encoded bytes in Protobuf format.
+class ProtobufString extends ProtobufBytes {
+  /// The wire type for this class, set to `len` for length-delimited fields.
+  static const ProtobufWireType wireType = ProtobufWireType.len;
 
-      if (protobufField == null) {
-        continue;
-      }
-
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
-    }
-    return Uint8List.fromList(result);
+  /// Factory constructor that creates a [ProtobufString] by encoding the given string as UTF-8 bytes.
+  factory ProtobufString(String value) {
+    return ProtobufString._(utf8.encode(value));
   }
+
+  /// Private constructor used by factory constructor to build [ProtobufString]
+  const ProtobufString._(super.bytes);
+
+  /// Checks if the current string value is the default (empty).
+  @override
+  bool hasDefaultValue() => value.isEmpty;
 }

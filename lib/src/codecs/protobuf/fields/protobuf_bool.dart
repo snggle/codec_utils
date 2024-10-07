@@ -32,32 +32,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'dart:typed_data';
-
 import 'package:codec_utils/codec_utils.dart';
 
-/// A class for encoding Protobuf fields into a byte array.
-/// It processes a map of Protobuf field entries and encodes each field into a list of bytes.
-class ProtobufEncoder {
-  /// Encodes a map of Protobuf field entries into a Protobuf byte array.
-  /// Each field is encoded based on its field number, skipping fields that are null or have a default value
-  static Uint8List encode(Map<int, AProtobufField?> protobufEntries) {
-    List<int> result = <int>[];
-    for (MapEntry<int, AProtobufField?> protobufEntry in protobufEntries.entries) {
-      int fieldNumber = protobufEntry.key;
-      AProtobufField? protobufField = protobufEntry.value;
+/// Represents a boolean value encoded as an `int` in Protobuf format.
+/// This class extends [ProtobufInt32], storing a boolean value as 0 or 1.
+class ProtobufBool extends ProtobufInt32 {
+  /// The encoding type for this class, set to varint.
+  static const ProtobufWireType wireType = ProtobufWireType.varint;
 
-      if (protobufField == null) {
-        continue;
-      }
+  /// Constructs a [ProtobufBool] object, converting a boolean value to an integer value of 0 or 1.
+  // ignore: avoid_positional_boolean_parameters
+  const ProtobufBool(bool value) : super(value ? 1 : 0);
 
-      if (protobufField.hasDefaultValue()) {
-        continue;
-      }
-
-      List<int> value = protobufField.encode(fieldNumber);
-      result.addAll(value);
-    }
-    return Uint8List.fromList(result);
-  }
+  /// Determines whether the value has the default value (false).
+  @override
+  bool hasDefaultValue() => value == 0;
 }
