@@ -1,6 +1,6 @@
 name: codec_utils
 description: "Dart package containing utility methods for data encoding and decoding"
-version: 0.0.5
+version: 0.0.6
 publish_to: none
 
 environment:
@@ -14,10 +14,6 @@ dependencies:
   # Small, easy to use and extensible logger which prints beautiful logs.
   # https://pub.dev/packages/logger
   logger: 2.4.0
-
-  # Library implementing Bitcoins BIP173 (Bech32 encoding) specification in a Flutter friendly fashion.
-  # https://pub.dev/packages/bech32
-  bech32: 0.2.2
 
   # Utility functions and classes related to the dart:typed_data library.
   # https://pub.dev/packages/typed_data
