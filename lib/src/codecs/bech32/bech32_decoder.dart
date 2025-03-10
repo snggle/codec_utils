@@ -1,0 +1,1 @@
+class Bech32Decoder{}
