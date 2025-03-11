@@ -1,1 +1,3 @@
-class Bech32Decoder{}
+class Bech32Decoder{
+
+}
