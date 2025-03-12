@@ -15,7 +15,7 @@ class Bech32Codec {
   }
 
   static Bech32Pair decode(String bechAddress) {
-    Bech32 decodedBech32 = bech32.decode(bechAddress);
+    Bech32 decodedBech32 = Bech32Decoder().convert(bechAddress);
     // TODO(dominik): Implement custom Bech32 decoding
     Uint8List convertedData = _convertBits(decodedBech32.data, 5, 8, padBool: false);
 

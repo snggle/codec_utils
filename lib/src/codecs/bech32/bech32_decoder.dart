@@ -1,3 +1,31 @@
-class Bech32Decoder{
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:bech32/bech32.dart';
+import 'package:codec_utils/codec_utils.dart';
+import 'package:codec_utils/src/codecs/bech32/bech32_validation.dart';
+
+class Bech32Decoder extends Converter<String, Bech32Pair> with Bech32Validation {
+
+  @override
+  Bech32Pair convert(String input, [int maxInputLength = Bech32Validation.maxInputLength]) {
+    if (input.length > maxInputLength) {}
+
+    int separatorPosition = input.lastIndexOf(separator);
+    input.toLowerCase();
+
+    String hrp = input.substring(0, separatorPosition);
+    String data = input.substring(separatorPosition + 1, input.length - Bech32Validation.checksumLength);
+    String checksum = input.substring(input.length - Bech32Validation.checksumLength);
+
+    Uint8List uint8List = Uint8List.fromList(data.split('').map((String element) {
+      return charset.indexOf(element);
+    }).toList());
+
+    List<int> checksumByteList = checksum.split('').map((String element){
+      return charset.indexOf(element);
+    }).toList();
+
+    return Bech32Pair(hrp: hrp, data: uint8List);
+  }
 }

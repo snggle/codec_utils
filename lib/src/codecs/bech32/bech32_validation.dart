@@ -1,6 +1,6 @@
 import 'package:bech32/bech32.dart';
 
-class Bech32Validation {
+mixin Bech32Validation {
   static const int maxInputLength = 90;
   static const int checksumLength = 6;
 
@@ -17,10 +17,22 @@ class Bech32Validation {
   }
 
   bool isChecksumValid(String prefix, List<int> dataList, List<int> checksumList) {
-    return
+    return _verifyChecksum(prefix, dataList + checksumList);
   }
 
-  bool verifyChecksum(String prefix, List<int> checksumDataList) {
+  bool isMixedCase(String input) {
+    return input.toLowerCase() != input && input.toUpperCase() != input;
+  }
+
+  bool hasInvalidSeparator(String input) {
+    return input.lastIndexOf(separator) == -1;
+  }
+
+  bool hasInvalidPrefixChars(String prefix) {
+    return prefix.codeUnits.any((int element) => element < 33 || element > 126);
+  }
+
+  bool _verifyChecksum(String prefix, List<int> checksumDataList) {
     return _polymod(_expandPrefix(prefix) + checksumDataList) == 1;
   }
 
@@ -38,8 +50,8 @@ class Bech32Validation {
     return checksum;
   }
 
-  List<int> _expandPrefix(String prefix){
-    List<int> resultList = prefix.codeUnits.map((int element) => element >>5).toList();
+  List<int> _expandPrefix(String prefix) {
+    List<int> resultList = prefix.codeUnits.map((int element) => element >> 5).toList();
     resultList = resultList + <int>[0];
     resultList = resultList + prefix.codeUnits.map((int element) => element & 31).toList();
     return resultList;
