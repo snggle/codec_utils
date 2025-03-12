@@ -17,5 +17,6 @@ class Bech32Encoder extends Converter<Bech32Pair, String> with Bech32Validation 
     Uint8List checkSummed = dataUint8List
   }
 
-  List<int> _createChec
+
+  }
 }

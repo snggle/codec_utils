@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bech32/bech32.dart';
 
 mixin Bech32Validation {
@@ -16,8 +18,8 @@ mixin Bech32Validation {
     return separatorPosition == 0;
   }
 
-  bool isChecksumValid(String prefix, List<int> dataList, List<int> checksumList) {
-    return _verifyChecksum(prefix, dataList + checksumList);
+  bool isChecksumValid(String hrp, List<int> dataList, List<int> checksumList) {
+    return _verifyChecksum(hrp, dataList + checksumList);
   }
 
   bool isMixedCase(String input) {
@@ -28,12 +30,16 @@ mixin Bech32Validation {
     return input.lastIndexOf(separator) == -1;
   }
 
-  bool hasInvalidPrefixChars(String prefix) {
-    return prefix.codeUnits.any((int element) => element < 33 || element > 126);
+  bool hasInvalidPrefixChars(String hrp) {
+    return hrp.codeUnits.any((int element) => element < 33 || element > 126);
   }
 
-  bool _verifyChecksum(String prefix, List<int> checksumDataList) {
-    return _polymod(_expandPrefix(prefix) + checksumDataList) == 1;
+  bool _verifyChecksum(String hrp, List<int> checksumDataList) {
+    return _polymod(_expandHrp(hrp) + checksumDataList) == 1;
+  }
+
+  Uint8List createChecmmed(String hrp, Uint8List dataUint8List){
+    Uint8List valuesList = _expandHrp(prefix)
   }
 
   int _polymod(List<int> valuesList) {
@@ -50,10 +56,10 @@ mixin Bech32Validation {
     return checksum;
   }
 
-  List<int> _expandPrefix(String prefix) {
-    List<int> resultList = prefix.codeUnits.map((int element) => element >> 5).toList();
-    resultList = resultList + <int>[0];
-    resultList = resultList + prefix.codeUnits.map((int element) => element & 31).toList();
-    return resultList;
+  Uint8List _expandHrp(String hrp) {
+    Uint8List resultUint8List = Uint8List.fromList(hrp.codeUnits.map((int element) => element >> 5).toList());
+    resultUint8List = resultUint8List + Uint8List.fromList(<int>[0]);
+    resultUint8List = resultUint8List + hrp.codeUnits.map((int element) => element & 31).toList();
+    return Uint8List.fromList(resultUint8List);
   }
 }
