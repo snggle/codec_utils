@@ -7,113 +7,210 @@ import 'package:test/scaffolding.dart';
 void main() {
   Bech32Validation actualBech32validation = Bech32Validation();
 
-  group('Bech32Validation Tests', () {
-    test('isChecksumTooShort should return true for short checksum', () {
-      bool actualBool = actualBech32validation.isChecksumTooShort(5, 'crypto1abcd');
+  group('Tests of Bech32Validation.isChecksumTooShort()', () {
+    test('Should [return bool] for too short checksum', () {
+      // Arrange
+      int actualSeparatorPosition = 5;
+      String actualInput = 'crypto1abcd';
 
+      // Act
+      bool actualBool = actualBech32validation.isChecksumTooShort(actualSeparatorPosition, actualInput);
+
+      // Assert
       bool expectedBool = true;
 
       expect(actualBool, expectedBool);
     });
 
-    test('isChecksumTooShort should return false for valid length', () {
-      bool actualBool = actualBech32validation.isChecksumTooShort(5, 'crypto19vv6y4jchws9zt8sme4culxtku8dajndgyhdm2');
+    test('Should [return bool] for valid length of checksum', () {
+      // Arrange
+      int actualSeparatorPosition = 5;
+      String actualInput = 'crypto19vv6y4jchws9zt8sme4culxtku8dajndgyhdm2';
 
+      // Act
+      bool actualBool = actualBech32validation.isChecksumTooShort(actualSeparatorPosition, actualInput);
+
+      // Assert
       bool expectedBool = false;
 
       expect(actualBool, expectedBool);
     });
+  });
 
-    test('hasInvalidChars should return true for invalid character (-1)', () {
-      bool actualBool = actualBech32validation.hasInvalidChars(<int>[-1, 255, 10, 20, 255]);
+  group('Tests of Bech32Validation.hasInvalidChars()', () {
+    test('Should [return bool] for invalid character', () {
+      // Arrange
+      List<int> actualDataList = <int>[-1, 255, 10, 20, 255];
 
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidChars(actualDataList);
+
+      // Assert
       bool expectedBool = true;
 
       expect(actualBool, expectedBool);
     });
 
-    test('hasInvalidChars should return false for valid characters', () {
-      bool actualBool = actualBech32validation.hasInvalidChars(<int>[255, 10, 20, 255]);
+    test('Should [return bool] for valid characters', () {
+      // Arrange
+      List<int> actualDataList = <int>[255, 10, 20, 255];
 
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidChars(actualDataList);
+
+      // Assert
       bool expectedBool = false;
+
       expect(actualBool, expectedBool);
     });
+  });
 
-    test('isPrefixTooShort should return true for empty prefix', () {
-      bool actualBool = actualBech32validation.isPrefixTooShort(0);
+  group('Tests of Bech32Validation.isPrefixTooShort()', () {
+    test('Should [return bool] for to short prefix', () {
+      // Arrange
+      int actualSeparatorPosition = 0;
 
+      // Act
+      bool actualBool = actualBech32validation.isPrefixTooShort(actualSeparatorPosition);
+
+      // Assert
       bool expectedBool = true;
 
       expect(actualBool, expectedBool);
     });
 
-    test('isPrefixTooShort should return false for non-empty prefix', () {
+    test('Should [return bool] for non-empty prefix', () {
+      // Act
       bool actualBool = actualBech32validation.isPrefixTooShort(5);
 
+      // Assert
       bool expectedBool = false;
 
       expect(actualBool, expectedBool);
     });
+  });
 
-    test('isMixedCase should return true for mixed-case input', () {
+  group('Tests of Bech32Validation.isMixedCase()', () {
+    test('Should [return bool] for mixed-case input', () {
+      // Act
       bool actualBool = actualBech32validation.isMixedCase('BeCh32');
 
+      // Assert
       bool expectedBool = true;
 
       expect(actualBool, expectedBool);
     });
 
-    test('isMixedCase should return false for lowercase input', () {
+    test('Should [return bool] for lowercase input', () {
+      // Act
       bool actualBool = actualBech32validation.isMixedCase('bech32');
 
+      // Assert
       bool expectedBool = false;
 
       expect(actualBool, expectedBool);
     });
+  });
 
-    test('isMixedCase should return false for uppercase input', () {
-      expect(actualBech32validation.isMixedCase('BECH32'), isFalse);
+  test('Should [return bool] for uppercase input', () {
+    // Act
+    bool actualBool = actualBech32validation.isMixedCase('BECH32');
+
+    // Assert
+    bool expectedBool = false;
+
+    expect(actualBool, expectedBool);
+  });
+
+  group('Tests of Bech32Validation.hasInvalidSeparator()', () {
+    test('Should [return bool] if input has invalid separator', () {
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidSeparator('crypty asbas');
+
+      // Assert
+      bool expectedBool = true;
+
+      expect(actualBool, expectedBool);
     });
 
-    test('hasInvalidSeparator should return true if no separator is present', () {
-      expect(actualBech32validation.hasInvalidSeparator('crypto19vv6y4'), isTrue);
+    test('Should [return bool] if separator is present', () {
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidSeparator('crypto1abcd');
+
+      // Assert
+      bool expectedBool = false;
+
+      expect(actualBool, expectedBool);
+    });
+  });
+
+  group('Tests of Bech32Validation.hasInvalidPrefixChars()', () {
+    test('Should [return bool] for invalid prefix characters', () {
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidPrefixChars('\tcrypto');
+
+      // Assert
+      bool expectedBool = true;
+
+      expect(actualBool, expectedBool);
     });
 
-    test('hasInvalidSeparator should return false if separator is present', () {
-      expect(actualBech32validation.hasInvalidSeparator('crypto1abcd'), isFalse);
+    test('Should [return bool] for valid prefix', () {
+      // Act
+      bool actualBool = actualBech32validation.hasInvalidPrefixChars('crypto');
+
+      // Assert
+      bool expectedBool = false;
+
+      expect(actualBool, expectedBool);
+    });
+  });
+
+  group('Tests of Bech32Validation.createChecksum()', () {
+    test('Should [return checksum] for a given HRP and data', () {
+      // Arrange
+      String actualHrp = 'crypto';
+      Uint8List actualDataUint8List = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
+
+      // Act
+      Uint8List actualChecksum = actualBech32validation.createChecksum(actualHrp, actualDataUint8List);
+
+      // Assert
+      Uint8List expectedChecksum = Uint8List.fromList(<int>[0, 6, 23, 3, 22, 25]);
+
+      expect(actualChecksum, expectedChecksum);
+    });
+  });
+
+  group('Tests of Bech32Validation.isChecksumValid()', () {
+    test('Should [return bool] for valid checksum', () {
+      // Arrange
+      String actualHrp = 'crypto';
+      Uint8List actualDataUint8List = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
+
+      // Act
+      Uint8List actualChecksum = actualBech32validation.createChecksum(actualHrp, actualDataUint8List);
+      bool actualBool = actualBech32validation.isChecksumValid(actualHrp, actualDataUint8List, actualChecksum);
+
+      // Assert
+      bool expectedBool = true;
+
+      expect(actualBool, expectedBool);
     });
 
-    test('hasInvalidPrefixChars should return true for invalid prefix characters', () {
-      expect(actualBech32validation.hasInvalidPrefixChars('\tcrypto'), isTrue);
-    });
+    test('Should [return bool] for for incorrect checksum', () {
+      // Arrange
+      String actualHrp = 'crypto';
+      Uint8List actualDataUint8List = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
+      Uint8List actualChecksum = Uint8List.fromList(<int>[0, 0, 0, 0, 0, 0]);
 
-    test('hasInvalidPrefixChars should return false for valid prefix', () {
-      expect(actualBech32validation.hasInvalidPrefixChars('crypto'), isFalse);
-    });
+      // Act
+      bool actualBool = actualBech32validation.isChecksumValid(actualHrp, actualDataUint8List, actualChecksum);
 
-    test('createChecksum should return valid checksum for a given HRP and data', () {
-      String hrp = 'crypto';
-      Uint8List data = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
+      // Assert
+      bool expectedBool = false;
 
-      Uint8List checksum = actualBech32validation.createChecksum(hrp, data);
-
-      expect(checksum.length, Bech32Validation.checksumLength);
-    });
-
-    test('isChecksumValid should return true for valid checksum', () {
-      String hrp = 'crypto';
-      Uint8List data = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
-      Uint8List checksum = actualBech32validation.createChecksum(hrp, data);
-
-      expect(actualBech32validation.isChecksumValid(hrp, data, checksum), isTrue);
-    });
-
-    test('isChecksumValid should return false for incorrect checksum', () {
-      String hrp = 'crypto';
-      Uint8List data = Uint8List.fromList(<int>[1, 2, 3, 4, 5]);
-      Uint8List invalidChecksum = Uint8List.fromList(<int>[0, 0, 0, 0, 0, 0]); // Invalid checksum
-
-      expect(actualBech32validation.isChecksumValid(hrp, data, invalidChecksum), isFalse);
+      expect(actualBool, expectedBool);
     });
   });
 }
