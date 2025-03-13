@@ -1,10 +1,51 @@
 import 'dart:typed_data';
 
-import 'package:bech32/bech32.dart';
-
-mixin Bech32Validation {
+class Bech32Validation {
   static const int maxInputLength = 90;
   static const int checksumLength = 6;
+  static const String separator = '1';
+  static const List<String> charList = <String>[
+    'q',
+    'p',
+    'z',
+    'r',
+    'y',
+    '9',
+    'x',
+    '8',
+    'g',
+    'f',
+    '2',
+    't',
+    'v',
+    'd',
+    'w',
+    '0',
+    's',
+    '3',
+    'j',
+    'n',
+    '5',
+    '4',
+    'k',
+    'h',
+    'c',
+    'e',
+    '6',
+    'm',
+    'u',
+    'a',
+    '7',
+    'l',
+  ];
+
+  static const List<int> _generator = <int>[
+    0x3b6a57b2,
+    0x26508e6d,
+    0x1ea119fa,
+    0x3d4233dd,
+    0x2a1462b3,
+  ];
 
   bool isChecksumTooShort(int separatorPosition, String input) {
     return (input.length - separatorPosition - 1 - checksumLength) < 0;
@@ -18,8 +59,8 @@ mixin Bech32Validation {
     return separatorPosition == 0;
   }
 
-  bool isChecksumValid(String hrp, List<int> dataList, List<int> checksumList) {
-    return _verifyChecksum(hrp, dataList + checksumList);
+  bool isChecksumValid(String hrp, Uint8List dataUint8List, Uint8List checksumUint8List) {
+    return _verifyChecksum(hrp, Uint8List.fromList(dataUint8List + checksumUint8List));
   }
 
   bool isMixedCase(String input) {
@@ -34,12 +75,20 @@ mixin Bech32Validation {
     return hrp.codeUnits.any((int element) => element < 33 || element > 126);
   }
 
-  bool _verifyChecksum(String hrp, List<int> checksumDataList) {
-    return _polymod(_expandHrp(hrp) + checksumDataList) == 1;
+  Uint8List createChecksum(String hrp, Uint8List dataUint8List) {
+    Uint8List valuesList = Uint8List.fromList(_expandHrp(hrp) + dataUint8List + <int>[0, 0, 0, 0, 0, 0]);
+    int polymodUint8List = _polymod(valuesList) ^ 1;
+
+    Uint8List resultList = Uint8List.fromList(<int>[0, 0, 0, 0, 0, 0]);
+
+    for (int i = 0; i < resultList.length; i++) {
+      resultList[i] = (polymodUint8List >> (5 * (5 - i))) & 31;
+    }
+    return resultList;
   }
 
-  Uint8List createChecmmed(String hrp, Uint8List dataUint8List){
-    Uint8List valuesList = _expandHrp(prefix)
+  bool _verifyChecksum(String hrp, Uint8List checksumDataList) {
+    return _polymod(_expandHrp(hrp) + checksumDataList) == 1;
   }
 
   int _polymod(List<int> valuesList) {
@@ -47,9 +96,9 @@ mixin Bech32Validation {
     for (int element in valuesList) {
       int highBit = checksum >> 25;
       checksum = (checksum & 0x1ffffff) << 5 ^ element;
-      for (int i = 0; i < generator.length; i++) {
+      for (int i = 0; i < _generator.length; i++) {
         if ((highBit >> i) & 1 == 1) {
-          checksum ^= generator[i];
+          checksum ^= _generator[i];
         }
       }
     }
@@ -57,9 +106,9 @@ mixin Bech32Validation {
   }
 
   Uint8List _expandHrp(String hrp) {
-    Uint8List resultUint8List = Uint8List.fromList(hrp.codeUnits.map((int element) => element >> 5).toList());
-    resultUint8List = resultUint8List + Uint8List.fromList(<int>[0]);
-    resultUint8List = resultUint8List + hrp.codeUnits.map((int element) => element & 31).toList();
-    return Uint8List.fromList(resultUint8List);
+    List<int> resultList = hrp.codeUnits.map((int element) => element >> 5).toList();
+    resultList = resultList + <int>[0];
+    resultList = resultList + hrp.codeUnits.map((int element) => element & 31).toList();
+    return Uint8List.fromList(resultList);
   }
 }

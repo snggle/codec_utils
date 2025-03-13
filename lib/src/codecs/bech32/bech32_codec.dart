@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:bech32/bech32.dart';
+import 'package:codec_utils/src/codecs/bech32/bech32_decoder.dart';
+import 'package:codec_utils/src/codecs/bech32/bech32_encoder.dart';
 import 'package:codec_utils/src/codecs/bech32/bech32_pair.dart';
 
 /// The [Bech32Codec] class is designed for encoding data using the Bech32 encoding scheme.
@@ -11,12 +12,11 @@ class Bech32Codec {
   static String encode(Bech32Pair bech32pair) {
     Uint8List convertedData = _convertBits(bech32pair.data, 8, 5);
     // TODO(dominik): Implement custom Bech32 encoding
-    return bech32.encode(Bech32(bech32pair.hrp, convertedData));
+    return Bech32Encoder().convert(Bech32Pair(hrp: bech32pair.hrp, data: convertedData));
   }
 
   static Bech32Pair decode(String bechAddress) {
-    Bech32 decodedBech32 = Bech32Decoder().convert(bechAddress);
-    // TODO(dominik): Implement custom Bech32 decoding
+    Bech32Pair decodedBech32 = Bech32Decoder().convert(bechAddress);
     Uint8List convertedData = _convertBits(decodedBech32.data, 5, 8, padBool: false);
 
     return Bech32Pair(data: convertedData, hrp: decodedBech32.hrp);
