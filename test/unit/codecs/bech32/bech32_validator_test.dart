@@ -71,7 +71,7 @@ void main() {
       int actualSeparatorPosition = 0;
 
       // Act
-      bool actualBool = actualBech32validation.isPrefixTooShort(actualSeparatorPosition);
+      bool actualBool = actualBech32validation.isHrpTooShort(actualSeparatorPosition);
 
       // Assert
       bool expectedBool = true;
@@ -81,7 +81,7 @@ void main() {
 
     test('Should [return bool] for non-empty prefix', () {
       // Act
-      bool actualBool = actualBech32validation.isPrefixTooShort(5);
+      bool actualBool = actualBech32validation.isHrpTooShort(5);
 
       // Assert
       bool expectedBool = false;
