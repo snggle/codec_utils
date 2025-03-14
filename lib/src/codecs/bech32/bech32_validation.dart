@@ -47,8 +47,8 @@ class Bech32Validation {
     0x2a1462b3,
   ];
 
-  bool isChecksumTooShort(int separatorPosition, String input) {
-    return (input.length - separatorPosition - 1 - checksumLength) < 0;
+  bool isChecksumTooShort(int checksumLength, String input) {
+    return checksumLength < 0;
   }
 
   bool hasInvalidChars(List<int> dataList) {

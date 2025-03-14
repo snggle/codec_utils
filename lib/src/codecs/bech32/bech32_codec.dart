@@ -11,7 +11,6 @@ import 'package:codec_utils/src/codecs/bech32/bech32_pair.dart';
 class Bech32Codec {
   static String encode(Bech32Pair bech32pair) {
     Uint8List convertedData = _convertBits(bech32pair.data, 8, 5);
-    // TODO(dominik): Implement custom Bech32 encoding
     return Bech32Encoder().convert(Bech32Pair(hrp: bech32pair.hrp, data: convertedData));
   }
 
