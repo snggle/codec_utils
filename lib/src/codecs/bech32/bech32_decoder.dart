@@ -27,7 +27,9 @@ class Bech32Decoder extends Converter<String, Bech32Pair> {
       throw Exception('Checksum is to short: ${input.length} < 6');
     }
 
-    if (Bech32Validation.)
+    if (Bech32Validation().isHrpTooShort(separatorPosition)){
+      throw Exception('The hrp is to short: $separatorPosition');
+    }
 
     input.toLowerCase();
 
@@ -39,10 +41,23 @@ class Bech32Decoder extends Converter<String, Bech32Pair> {
       return charList.indexOf(element);
     }).toList());
 
-    List<int> checksumByteList = checksum.split('').map((String element) {
-      return charList.indexOf(element);
-    }).toList();
+    if (Bech32Validation().hasOutOfRangeChars(uint8List)){
+      throw Exception('Bech32 has undefined character: ${data[uint8List.indexOf(-1)]}');
+    }
 
-    return Bech32Pair(hrp: hrp, data: uint8List);
+    Uint8List checksumByteList = Uint8List.fromList(checksum.split('').map((String element) {
+      return charList.indexOf(element);
+    }).toList());
+
+    if (Bech32Validation().hasOutOfRangeChars(checksumByteList)){
+      throw Exception('Bech32 has undefined character: ${checksumByteList[uint8List.indexOf(-1)]}');
+    }
+
+    if (Bech32Validation().isChecksumValid(hrp, uint8List, checksumByteList)){
+      return Bech32Pair(hrp: hrp, data: uint8List);
+    } else {
+      throw Exception('Checksum verification failed');
+    }
+
   }
 }

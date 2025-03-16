@@ -43,7 +43,7 @@ void main() {
       List<int> actualDataList = <int>[-1, 255, 10, 20, 255];
 
       // Act
-      bool actualBool = actualBech32validation.hasInvalidChars(actualDataList);
+      bool actualBool = actualBech32validation.hasOutOfRangeChars(actualDataList);
 
       // Assert
       bool expectedBool = true;
@@ -56,7 +56,7 @@ void main() {
       List<int> actualDataList = <int>[255, 10, 20, 255];
 
       // Act
-      bool actualBool = actualBech32validation.hasInvalidChars(actualDataList);
+      bool actualBool = actualBech32validation.hasOutOfRangeChars(actualDataList);
 
       // Assert
       bool expectedBool = false;

@@ -51,7 +51,7 @@ class Bech32Validation {
     return  input.length - separatorPosition - 1 - checksumLength < 0;
   }
 
-  bool hasInvalidChars(List<int> dataList) {
+  bool hasOutOfRangeChars(List<int> dataList) {
     return dataList.any((int element) => element == -1);
   }
 
@@ -79,12 +79,12 @@ class Bech32Validation {
     Uint8List valuesList = Uint8List.fromList(_expandHrp(hrp) + dataUint8List + <int>[0, 0, 0, 0, 0, 0]);
     int polymodUint8List = _polymod(valuesList) ^ 1;
 
-    Uint8List resultList = Uint8List.fromList(<int>[0, 0, 0, 0, 0, 0]);
+    Uint8List resultsUint8List = Uint8List.fromList(<int>[0, 0, 0, 0, 0, 0]);
 
-    for (int i = 0; i < resultList.length; i++) {
-      resultList[i] = (polymodUint8List >> (5 * (5 - i))) & 31;
+    for (int i = 0; i < resultsUint8List.length; i++) {
+      resultsUint8List[i] = (polymodUint8List >> (5 * (5 - i))) & 31;
     }
-    return resultList;
+    return resultsUint8List;
   }
 
   bool _verifyChecksum(String hrp, Uint8List checksumDataList) {
