@@ -110,16 +110,16 @@ void main() {
 
       expect(actualBool, expectedBool);
     });
-  });
 
-  test('Should [return bool] for uppercase input', () {
-    // Act
-    bool actualBool = actualBech32validation.isMixedCase('BECH32');
+    test('Should [return bool] for uppercase input', () {
+      // Act
+      bool actualBool = actualBech32validation.isMixedCase('BECH32');
 
-    // Assert
-    bool expectedBool = false;
+      // Assert
+      bool expectedBool = false;
 
-    expect(actualBool, expectedBool);
+      expect(actualBool, expectedBool);
+    });
   });
 
   group('Tests of Bech32Validation.hasInvalidSeparator()', () {
@@ -147,7 +147,7 @@ void main() {
   group('Tests of Bech32Validation.hasInvalidPrefixChars()', () {
     test('Should [return bool] for invalid prefix characters', () {
       // Act
-      bool actualBool = actualBech32validation.hasInvalidPrefixChars('\tcrypto');
+      bool actualBool = actualBech32validation.hasHrpInvalidChars('\tcrypto');
 
       // Assert
       bool expectedBool = true;
@@ -157,7 +157,7 @@ void main() {
 
     test('Should [return bool] for valid prefix', () {
       // Act
-      bool actualBool = actualBech32validation.hasInvalidPrefixChars('crypto');
+      bool actualBool = actualBech32validation.hasHrpInvalidChars('crypto');
 
       // Assert
       bool expectedBool = false;

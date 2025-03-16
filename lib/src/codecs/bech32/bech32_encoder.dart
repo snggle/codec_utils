@@ -13,7 +13,17 @@ class Bech32Encoder extends Converter<Bech32Pair, String> {
     String hrp = input.hrp;
     Uint8List dataUint8List = input.data;
 
-    if (hrp.length + dataUint8List.length + separator.length + Bech32Validation.checksumLength > maxLength) {}
+    if (hrp.length + dataUint8List.length + separator.length + Bech32Validation.checksumLength > maxLength) {
+      throw Exception('Bech32 is to long: ${hrp.length+dataUint8List.length + 1 + Bech32Validation.checksumLength}');
+    }
+
+    if (hrp.isEmpty){
+      throw Exception('The hrp is to short: $hrp');
+    }
+
+    if (Bech32Validation().hasHrpInvalidChars(hrp)){
+
+    }
 
     hrp.toLowerCase();
 

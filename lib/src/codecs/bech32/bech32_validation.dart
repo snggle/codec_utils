@@ -71,7 +71,7 @@ class Bech32Validation {
     return input.lastIndexOf(separator) == -1;
   }
 
-  bool hasInvalidPrefixChars(String hrp) {
+  bool hasHrpInvalidChars(String hrp) {
     return hrp.codeUnits.any((int element) => element < 33 || element > 126);
   }
 

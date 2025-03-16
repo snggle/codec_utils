@@ -37,6 +37,10 @@ class Bech32Decoder extends Converter<String, Bech32Pair> {
     String data = input.substring(separatorPosition + 1, input.length - maxChecksumLength);
     String checksum = input.substring(input.length - maxChecksumLength);
 
+    if(Bech32Validation().hasHrpInvalidChars(hrp)){
+      throw Exception('The hrp has invalid characters: $hrp');
+    }
+
     Uint8List uint8List = Uint8List.fromList(data.split('').map((String element) {
       return charList.indexOf(element);
     }).toList());
