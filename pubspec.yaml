@@ -1,6 +1,6 @@
 name: codec_utils
 description: "Dart package containing utility methods for data encoding and decoding"
-version: 0.0.4
+version: 0.0.5
 publish_to: none
 
 environment:
@@ -15,13 +15,13 @@ dependencies:
   # https://pub.dev/packages/logger
   logger: 2.4.0
 
-  # Implementations of SHA, MD5, and HMAC cryptographic functions.
-  # https://pub:dev/packages/crypto
-  crypto: 3.0.3
-
   # Library implementing Bitcoins BIP173 (Bech32 encoding) specification in a Flutter friendly fashion.
   # https://pub.dev/packages/bech32
   bech32: 0.2.2
+
+  # Utility functions and classes related to the dart:typed_data library.
+  # https://pub.dev/packages/typed_data
+  typed_data: ^1.3.0
 
   # CBOR library for Dart. An RFC8949 compliant encoding/decoding CBOR implementation.
   # https://pub.dev/packages/cbor
