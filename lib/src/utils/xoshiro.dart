@@ -26,7 +26,8 @@
 
 import 'dart:math';
 
-import 'package:crypto/crypto.dart';
+import 'package:codec_utils/src/utils/sha/hash/digest.dart';
+import 'package:codec_utils/src/utils/sha/sha256/sha256.dart';
 
 /// Implements the Xoshiro (xor/shift/rotate) pseudorandom number generator.
 class Xoshiro implements Random {
@@ -38,14 +39,14 @@ class Xoshiro implements Random {
 
   /// Creates a new instance of [Xoshiro] with the specified seed.
   factory Xoshiro(List<int> seed) {
-    Digest digest = sha256.convert(seed);
+    Digest digest = Sha256().convert(seed);
     List<BigInt> s = List<BigInt>.generate(4, (_) => BigInt.zero);
     for (int i = 0; i < 4; i++) {
       int o = i * 8;
       BigInt v = BigInt.zero;
       for (int n = 0; n < 8; n++) {
         v = (v << 8).toUnsigned(64);
-        v = v ^ BigInt.from(digest.bytes[o + n]);
+        v = v ^ BigInt.from(digest.byteList[o + n]);
       }
       s[i] = v.toUnsigned(64);
     }

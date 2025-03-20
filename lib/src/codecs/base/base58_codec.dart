@@ -32,7 +32,7 @@
 import 'dart:typed_data';
 
 import 'package:codec_utils/src/utils/big_int_utils.dart';
-import 'package:crypto/crypto.dart';
+import 'package:codec_utils/src/utils/sha/sha256/sha256.dart';
 
 /// The [Base58Codec] class is designed for encoding data using the Base58 encoding scheme.
 class Base58Codec {
@@ -98,7 +98,7 @@ class Base58Codec {
   }
 
   static List<int> _computeChecksum(Uint8List dataBytes) {
-    Uint8List doubleSha256Digest = Uint8List.fromList(sha256.convert(sha256.convert(dataBytes).bytes).bytes);
+    Uint8List doubleSha256Digest = Sha256().convert(Sha256().convert(dataBytes).byteList).byteList;
     return doubleSha256Digest.sublist(0, 4);
   }
 }
