@@ -7,6 +7,8 @@ import 'package:codec_utils/src/codecs/cbor/crypto/cbor_crypto_hd_key.dart';
 import 'package:codec_utils/src/codecs/cbor/crypto/cbor_crypto_keypath.dart';
 import 'package:codec_utils/src/codecs/cbor/ethereum/cbor_eth_sign_request.dart';
 import 'package:codec_utils/src/codecs/cbor/ethereum/cbor_eth_signature.dart';
+import 'package:codec_utils/src/codecs/cbor/solana/cbor_sol_sign_request.dart';
+import 'package:codec_utils/src/codecs/cbor/solana/cbor_sol_signature.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ACborTaggedObject extends Equatable {
@@ -33,6 +35,10 @@ abstract class ACborTaggedObject extends Equatable {
         return CborEthSignature.fromCborMap(cborMap);
       case CborSpecialTag.ethSignRequest:
         return CborEthSignRequest.fromCborMap(cborMap);
+      case CborSpecialTag.solSignature:
+        return CborSolSignature.fromCborMap(cborMap);
+      case CborSpecialTag.solSignRequest:
+        return CborSolSignRequest.fromCborMap(cborMap);
       default:
         throw UnimplementedError('Unimplemented CBOR tag: ${cborSpecialTag}');
     }
