@@ -5,10 +5,15 @@ enum CborSpecialTag {
   cryptoHDKey(type: 'crypto-hdkey', tag: 303),
   cryptoKeypath(type: 'crypto-keypath', tag: 304),
   cryptoCoinInfo(type: 'crypto-coin-info', tag: 305),
+  cryptoMultiAccounts(type: 'crypto-multi-accounts', tag: 1103),
 
   // ETH
   ethSignRequest(type: 'eth-sign-request', tag: 401),
-  ethSignature(type: 'eth-signature', tag: 402);
+  ethSignature(type: 'eth-signature', tag: 402),
+
+  // SOL
+  solSignRequest(type: 'sol-sign-request', tag: 1101),
+  solSignature(type: 'sol-signature', tag: 1102);
 
   final String type;
   final int tag;

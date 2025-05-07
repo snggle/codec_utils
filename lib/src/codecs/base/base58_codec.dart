@@ -94,7 +94,10 @@ class Base58Codec {
       }
     }
 
-    return Uint8List.fromList(<int>[...List<int>.filled(padLen, 0), ...bytes]);
+    return Uint8List.fromList(<int>[
+      ...List<int>.filled(padLen, 0),
+      if ((bytes[0] == 0 && bytes.length == 1) == false) ...bytes,
+    ]);
   }
 
   static List<int> _computeChecksum(Uint8List dataBytes) {
