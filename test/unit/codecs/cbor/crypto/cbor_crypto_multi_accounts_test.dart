@@ -14,7 +14,7 @@ void main() {
     test('Should [return CborCryptoMultiAccounts] from serialized CBOR bytes (WITH tag)', () {
       // Arrange
       Uint8List actualSerializedCborBytes = HexCodec.decode(
-          'd9044Fa5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
+          'd9044fa5016865393138316366330281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
 
       // Act
       CborCryptoMultiAccounts actualCborCryptoMultiAccounts = CborCryptoMultiAccounts.fromSerializedCbor(actualSerializedCborBytes);
@@ -47,7 +47,7 @@ void main() {
     test('Should [return CborCryptoMultiAccounts] from serialized CBOR bytes (WITHOUT tag)', () {
       // Arrange
       Uint8List actualSerializedCborBytes = HexCodec.decode(
-          'a5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
+          'a5016865393138316366330281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
 
       // Act
       CborCryptoMultiAccounts actualCborCryptoMultiAccounts = CborCryptoMultiAccounts.fromSerializedCbor(actualSerializedCborBytes);
@@ -83,7 +83,7 @@ void main() {
       // Arrange
       CborMap actualCborMap = CborMap(
         <CborSmallInt, CborValue>{
-          const CborSmallInt(1): CborInt(BigInt.from(3910671603)),
+          const CborSmallInt(1): CborString('e9181cf3'),
           const CborSmallInt(2): CborList(<CborValue>[
             CborMap(
               <CborSmallInt, CborValue>{
@@ -148,7 +148,7 @@ void main() {
       // Arrange
       CborMap actualCborMap = CborMap(
         <CborSmallInt, CborValue>{
-          const CborSmallInt(1): CborInt(BigInt.from(3910671603)),
+          const CborSmallInt(1): CborString('e9181cf3'),
           const CborSmallInt(2): CborList(<CborValue>[
             CborMap(
               <CborSmallInt, CborValue>{
@@ -239,7 +239,7 @@ void main() {
       // Assert
       CborMap expectedCborMap = CborMap(
         <CborSmallInt, CborValue>{
-          const CborSmallInt(1): CborInt(BigInt.from(3910671603)),
+          const CborSmallInt(1): CborString('e9181cf3'),
           const CborSmallInt(2): CborList(<CborValue>[
             CborMap(
               <CborSmallInt, CborValue>{
@@ -302,7 +302,7 @@ void main() {
       // Assert
       CborMap expectedCborMap = CborMap(
         <CborSmallInt, CborValue>{
-          const CborSmallInt(1): CborInt(BigInt.from(3910671603)),
+          const CborSmallInt(1): CborString('e9181cf3'),
           const CborSmallInt(2): CborList(<CborValue>[
             CborMap(
               <CborSmallInt, CborValue>{
@@ -366,7 +366,7 @@ void main() {
 
       // Assert
       Uint8List expectedSerializedCborBytes = HexCodec.decode(
-          'd9044Fa5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
+          'd9044fa5016865393138316366330281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
 
       expect(actualSerializedCborBytes, expectedSerializedCborBytes);
     });
@@ -399,7 +399,7 @@ void main() {
 
       // Assert
       Uint8List expectedSerializedCborBytes = HexCodec.decode(
-          'a5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
+          'a5016865393138316366330281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32');
 
       expect(actualSerializedCborBytes, expectedSerializedCborBytes);
     });
