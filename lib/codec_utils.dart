@@ -23,6 +23,8 @@ export 'src/codecs/bech32/export.dart';
 /// Defines available CBOR data structures
 export 'src/codecs/cbor/export.dart';
 
+export 'src/codecs/compact_u16/export.dart';
+
 /// The [HexCodec] class is designed for encoding and decoding data using the hexadecimal encoding scheme.
 /// Usage:
 ///  ```
