@@ -1,21 +1,25 @@
 import 'dart:typed_data';
 
+/// A helper class use for sequential reading of bytes from a [Uint8List] with [_offset] tracking.
 class ByteReader {
   final Uint8List data;
   int _offset = 0;
 
   ByteReader(this.data);
 
-  void leftShiftBy(int count) {
+  /// Moves the [_offset] backward by [count] bytes.
+  void shiftLeftBy(int count) {
     if (_offset < count) {
       throw RangeError('Offset out of bounds');
     }
     _offset -= count;
   }
 
-  int rightShift() => rightShiftBy(1)[0];
+  /// Reads 1 byte the at current [_offset] and moves the [_offset] forward by 1 byte.
+  int shiftRight() => shiftRightBy(1)[0];
 
-  Uint8List rightShiftBy(int count) {
+  /// Reads [count] bytes starting at the current [_offset] and moves the [_offset] forward by [count] bytes.
+  Uint8List shiftRightBy(int count) {
     if (_offset + count > data.length) {
       throw RangeError('Offset out of bounds');
     }

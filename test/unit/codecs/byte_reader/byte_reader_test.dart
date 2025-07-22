@@ -1,44 +1,57 @@
+// ignore_for_file: cascade_invocations
+
 import 'dart:typed_data';
 
 import 'package:codec_utils/src/codecs/byte_reader/byte_reader.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Tests of ByteReader.rightShift()', () {
-    test('Should [return bytes]', () {
+  group('Tests of ByteReader.shiftRight()', () {
+    test('Should [return the element at the current offset]', () {
       // Arrange
-      ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 
       // Act
-      int actualReadBytes = byteReader.rightShift();
+      int actualReadByte = actualByteReader.shiftRight();
 
       // Assert
-      int expectedReadBytes = 0x01;
+      int expectedReadByte = 0x01;
 
-      expect(actualReadBytes, expectedReadBytes);
+      expect(actualReadByte, expectedReadByte);
     });
 
-    test('Should [increment offset]', () {
+    test('Should [increment offset by 1 byte]', () {
       // Arrange
-      ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]))
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 
       // Act
-        ..rightShift();
-      int actualOffset = byteReader.offset;
+      actualByteReader.shiftRight();
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedOffset = 1;
 
       expect(actualOffset, expectedOffset);
     });
-  });
-  group('Tests of ByteReader.rightShiftBy()', () {
-    test('Should [return bytes]', () {
+
+    test('Should [throw RangeError] if shifted right past end of data', () {
       // Arrange
-      ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01]));
 
       // Act
-      Uint8List actualReadBytes = byteReader.rightShiftBy(2);
+      actualByteReader.shiftRight();
+
+      // Assert
+      expect(() => actualByteReader.shiftRight(), throwsRangeError);
+    });
+  });
+  group('Tests of ByteReader.shiftRightBy()', () {
+    test('Should [return elements at the current offset]', () {
+      // Arrange
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+
+      // Act
+      Uint8List actualReadBytes = actualByteReader.shiftRightBy(2);
 
       // Assert
       Uint8List expectedReadBytes = Uint8List.fromList(<int>[0x01, 0x02]);
@@ -46,34 +59,53 @@ void main() {
       expect(actualReadBytes, expectedReadBytes);
     });
 
-    test('Should [increment offset]', () {
+    test('Should [increment offset by the number of shifted bytes]', () {
       // Arrange
-      ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]))
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 
-        // Act
-        ..rightShiftBy(4);
-      int actualOffset = byteReader.offset;
+      // Act
+      actualByteReader.shiftRightBy(4);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedOffset = 4;
 
       expect(actualOffset, expectedOffset);
     });
-  });
-  group('Tests of ByteReader.leftShiftBy()', () {
-    test('Should [return bytes]', () {
+
+    test('Should [throw RangeError] if shifted right past end of data', () {
       // Arrange
-      ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]))
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+
+      // Assert
+      expect(() => actualByteReader.shiftRightBy(5), throwsRangeError);
+    });
+  });
+  group('Tests of ByteReader.shiftLeftBy()', () {
+    test('Should [decrement offset by the number of shifted bytes]', () {
+      // Arrange
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 
       // Act
-        ..rightShiftBy(3)
-        ..leftShiftBy(2);
-      int actualOffset = byteReader.offset;
+      actualByteReader.shiftRightBy(3);
+      actualByteReader.shiftLeftBy(2);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedOffset = 1;
 
       expect(actualOffset, expectedOffset);
+    });
+
+    test('Should [throw RangeError] if shifted left past end of data', () {
+      // Arrange
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+
+      // Act
+      actualByteReader.shiftRightBy(3);
+
+      // Assert
+      expect(() => actualByteReader.shiftLeftBy(4), throwsRangeError);
     });
   });
 }

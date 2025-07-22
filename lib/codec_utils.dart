@@ -8,6 +8,7 @@ library codec_utils;
 ///  Uint8List decodedBase58 = Base58Codec.decode("aXQWBu6W");
 ///  ```
 export 'src/codecs/base/base58_codec.dart';
+
 /// Classes designed for encoding data using the Bech32 encoding scheme.
 /// Usage:
 ///  ``
@@ -25,11 +26,28 @@ export 'src/codecs/base/base58_codec.dart';
 ///  ```
 export 'src/codecs/bech32/export.dart';
 
+/// The [ByteReader] class is designed for sequential reading of binary data and tracking the current [offset] of bytes.
+/// Usage:
+///   ```
+///  ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
+///  int byte = reader.shiftRight();
+///  Uint8List bytes = reader.shiftRightBy(2);
+///  byteReader.shiftLeftBy(3);
+///   ```
 export 'src/codecs/byte_reader/byte_reader.dart';
+
 /// Defines available CBOR data structures
 export 'src/codecs/cbor/export.dart';
 
-export 'src/codecs/compact_u16/export.dart';
+/// The [CompactU16Decoder] class is designed for decoding the first 16-bit unsigned integer encoded in a compact, variable-length format
+/// from an object of the [ByteReader] class at its current [offset].
+/// Usage:
+///   ```
+///  ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0xFF, 0x03]));
+///  int decodedValue = CompactU16Decoder.decode(byteReader);
+///   ```
+export 'src/codecs/compact_u16/compact_u16_decoder.dart';
+
 /// The [HexCodec] class is designed for encoding and decoding data using the hexadecimal encoding scheme.
 /// Usage:
 ///  ```
@@ -37,12 +55,14 @@ export 'src/codecs/compact_u16/export.dart';
 ///  Uint8List decodedHex = HexCodec.decode("0102030405");
 ///  ```
 export 'src/codecs/hex/hex_codec.dart';
+
 /// Classes for encoding cosmos messages using minimal protobuf encoding.
 /// Usage:
 ///  ```
 ///  List<int> ProtobufEncoder.encode(1, protobufMessage);
 ///  ```
 export 'src/codecs/protobuf/export.dart';
+
 ///  Provides static utility methods for encoding and decoding data using the Recursive Length Prefix (RLP) encoding scheme.
 ///  Usage:
 ///   ```
@@ -50,6 +70,7 @@ export 'src/codecs/protobuf/export.dart';
 ///   IRLPElement decodedRlp = RLP.decode(encodedRlp);
 ///   ```
 export 'src/codecs/rlp/rlp_codec.dart';
+
 /// Defines Uniform Resource (UR) object, containing CBOR encoded data from QR code.
 /// Usage:
 ///   ```
@@ -66,6 +87,7 @@ export 'src/codecs/rlp/rlp_codec.dart';
 ///   CborValue cborValue = ur.decodeCborPayload();
 ///   ```
 export 'src/codecs/uniform_resource/ur.dart';
+
 /// Provides functionality to decode data from Uniform Resource (UR) format from single or multi UR resource
 /// Usage:
 ///   ```
@@ -94,6 +116,7 @@ export 'src/codecs/uniform_resource/ur.dart';
 ///   int expectedPartCount = urDecoder.expectedPartCount;
 ///   ```
 export 'src/codecs/uniform_resource/ur_decoder.dart';
+
 /// Provides functionality to encode data into Uniform Resource (UR) format
 /// Usage:
 ///   ```

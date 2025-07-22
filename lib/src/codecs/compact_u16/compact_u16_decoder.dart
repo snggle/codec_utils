@@ -10,16 +10,16 @@ import 'package:codec_utils/src/codecs/byte_reader/byte_reader.dart';
 class CompactU16Decoder {
   static const int _maxCompactU16EncodingLength = 3;
 
-  /// Decodes the actual integer value from [bytes] starting at [offset] with known [length].
+  /// Decodes the first actual integer value from [byteReader], starting at its current [offset].
   static int decode(ByteReader byteReader) {
     int value = 0;
     int size = 0;
     int shift = 0;
     try {
       for (int i = 0; i < _maxCompactU16EncodingLength; i++) {
-        int elem = byteReader.rightShift();
+        int elem = byteReader.shiftRight();
         if (elem == 0 && i != 0) {
-          throw Exception('alias (leading zero on non-first byte)');
+          throw Exception('Zero byte found beyond first position');
         }
         if (i == _maxCompactU16EncodingLength - 1 && (elem & 0x80) != 0) {
           throw Exception('Attempted to read past the third byte');
@@ -39,7 +39,7 @@ class CompactU16Decoder {
         throw Exception('Invalid CompactU16 length: $value');
       }
     } catch (e) {
-      byteReader.leftShiftBy(size);
+      byteReader.shiftLeftBy(size);
       rethrow;
     }
     return value;

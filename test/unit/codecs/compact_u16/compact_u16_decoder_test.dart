@@ -1,11 +1,11 @@
 import 'dart:typed_data';
-import 'package:codec_utils/src/codecs/byte_reader/export.dart';
-import 'package:codec_utils/src/codecs/compact_u16/export.dart';
+import 'package:codec_utils/src/codecs/byte_reader/byte_reader.dart';
+import 'package:codec_utils/src/codecs/compact_u16/compact_u16_decoder.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Tests of CompactU16Decoder.decode method', () {
-    test('Should [return 0] for input 0x00', () {
+  group('Tests of CompactU16Decoder.decode()', () {
+    test('Should [return 0] for input 0x00 (MIN one-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x00]));
 
@@ -18,7 +18,7 @@ void main() {
       expect(actualDecodedValue, expectedDecodedValue);
     });
 
-    test('Should [return 127] for input 0x7F', () {
+    test('Should [return 127] for input 0x7F (MAX one-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x7F]));
 
@@ -31,7 +31,7 @@ void main() {
       expect(actualDecodedValue, expectedDecodedValue);
     });
 
-    test('Should [return 128] for input 0x80 0x01', () {
+    test('Should [return 128] for input 0x80 0x01 (MIN two-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x80, 0x01]));
 
@@ -44,7 +44,7 @@ void main() {
       expect(actualDecodedValue, expectedDecodedValue);
     });
 
-    test('Should [return 16383] for input 0xFF 0x7F', () {
+    test('Should [return 16383] for input 0xFF 0x7F (MAX two-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0x7F]));
 
@@ -57,7 +57,7 @@ void main() {
       expect(actualDecodedValue, expectedDecodedValue);
     });
 
-    test('Should [return 16384] for input 0x80 0x80 0x01', () {
+    test('Should [return 16384] for input 0x80 0x80 0x01 (MIN three-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x80, 0x80, 0x01]));
 
@@ -70,7 +70,7 @@ void main() {
       expect(actualDecodedValue, expectedDecodedValue);
     });
 
-    test('Should [return 65535] for input 0xFF 0xFF 0x03', () {
+    test('Should [return 65535] for input 0xFF 0xFF 0x03 (MAX three-byte)', () {
       // Arrange
       ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0xFF, 0x03]));
 
