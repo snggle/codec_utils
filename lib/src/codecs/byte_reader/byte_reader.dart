@@ -7,6 +7,8 @@ class ByteReader {
 
   ByteReader(this.data);
 
+  int get offset => _offset;
+
   /// Moves the [_offset] backward by [count] bytes.
   void shiftLeftBy(int count) {
     if (_offset < count) {
@@ -27,6 +29,4 @@ class ByteReader {
     _offset += count;
     return bytes;
   }
-
-  int get offset => _offset;
 }
