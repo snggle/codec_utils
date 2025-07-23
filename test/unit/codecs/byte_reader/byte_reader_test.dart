@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Tests of ByteReader.shiftLeftBy()', () {
-    test('Should [decrement offset]', () {
+    test('Should [decrement offset by (2)]', () {
       // Arrange
       ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 
