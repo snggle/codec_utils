@@ -11,12 +11,18 @@ export 'src/codecs/base/base58_codec.dart';
 
 /// Classes designed for encoding data using the Bech32 encoding scheme.
 /// Usage:
-///  ```
-///  String encodedBech32 = Bech32Codec.encode(Bech32Pair(hrp: 'crypto', data: base64Decode('KxmiVli7oFEs8N5rjnzLtw7eym0=')));
-///  Bech32Pair decodedBech32 = Bech32Codec.decode("crypto19vv6y4jchws9zt8sme4culxtku8dajndgyhdm2");
+///  ``
+///  List<int> convertedUint5List = BytesUtils.convertBits(Bech32.uint8List, 8, 5, padBool: true);
 ///
-///  String encodedSegwit = SegwitBech32Codec.encode('bc', 0, base64Decode('KxmiVli7oFEs8N5rjnzLtw7eym0='));
-///  Uint8List decodedSegwit = SegwitBech32Codec.decode("bc1q9vv6y4jchws9zt8sme4culxtku8dajnd5jq660");
+///  Bech32 bech32 = Bech32.fromUint5List('bc', convertedUint5List)
+///  String encodedBech32  = Bech32Encoder().encode(bech32);
+///
+///  Bech32 decodedBech32 = Bech32Codec().decode("crypto19vv6y4jchws9zt8sme4culxtku8dajndgyhdm2");
+///
+///  SegWit segWit = SegWit(hrp, witnessVersion, witnessProgramUint8List);
+///  String encodedSegWit SegWitEncoder().encode(segWit);
+///
+///  SegWit decodedSegWit = SegWitDecoder().decode("bc1q9vv6y4jchws9zt8sme4culxtku8dajnd5jq660");
 ///  ```
 export 'src/codecs/bech32/export.dart';
 
