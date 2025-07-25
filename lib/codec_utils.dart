@@ -11,7 +11,7 @@ export 'src/codecs/base/base58_codec.dart';
 
 /// Classes designed for encoding data using the Bech32 encoding scheme.
 /// Usage:
-///  ``
+///  ```
 ///  List<int> convertedUint5List = BytesUtils.convertBits(Bech32.uint8List, 8, 5, padBool: true);
 ///
 ///  Bech32 bech32 = Bech32.fromUint5List('bc', convertedUint5List)
@@ -28,12 +28,12 @@ export 'src/codecs/bech32/export.dart';
 
 /// The [ByteReader] class is designed for sequential reading of binary data and tracking the current [offset] of bytes.
 /// Usage:
-///   ```
+///  ```
 ///  ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0x01, 0x02, 0x03, 0x04]));
 ///  int byte = reader.shiftRight();
 ///  Uint8List bytes = reader.shiftRightBy(2);
 ///  byteReader.shiftLeftBy(3);
-///   ```
+///  ```
 export 'src/codecs/byte_reader/byte_reader.dart';
 
 /// Defines available CBOR data structures
@@ -42,10 +42,10 @@ export 'src/codecs/cbor/export.dart';
 /// The [CompactU16Decoder] class is designed for decoding the first 16-bit unsigned integer encoded in a compact, variable-length format
 /// from an object of the [ByteReader] class at its current [offset].
 /// Usage:
-///   ```
+///  ```
 ///  ByteReader byteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0xFF, 0x03]));
 ///  int decodedValue = CompactU16Decoder.decode(byteReader);
-///   ```
+///  ```
 export 'src/codecs/compact_u16/compact_u16_decoder.dart';
 
 /// The [HexCodec] class is designed for encoding and decoding data using the hexadecimal encoding scheme.
