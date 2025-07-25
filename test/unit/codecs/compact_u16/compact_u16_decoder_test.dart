@@ -11,11 +11,14 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 0;
+      int expectedOffset = 1;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
     });
 
     test('Should [return 127] for input 0x7F (MAX one-byte)', () {
@@ -24,11 +27,14 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 127;
+      int expectedOffset = 1;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
     });
 
     test('Should [return 128] for input 0x80 0x01 (MIN two-byte)', () {
@@ -37,11 +43,14 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 128;
+      int expectedOffset = 2;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
     });
 
     test('Should [return 16383] for input 0xFF 0x7F (MAX two-byte)', () {
@@ -50,11 +59,14 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 16383;
+      int expectedOffset = 2;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
     });
 
     test('Should [return 16384] for input 0x80 0x80 0x01 (MIN three-byte)', () {
@@ -63,11 +75,14 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 16384;
+      int expectedOffset = 3;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
     });
 
     test('Should [return 65535] for input 0xFF 0xFF 0x03 (MAX three-byte)', () {
@@ -76,11 +91,40 @@ void main() {
 
       // Act
       int actualDecodedValue = CompactU16Decoder.decode(actualByteReader);
+      int actualOffset = actualByteReader.offset;
 
       // Assert
       int expectedDecodedValue = 65535;
+      int expectedOffset = 3;
 
       expect(actualDecodedValue, expectedDecodedValue);
+      expect(actualOffset, expectedOffset);
+    });
+
+    test('Should [throw Exception] when a byte has a continuation bit set but the next byte is 0', () {
+      // Arrange
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0x0]));
+
+      // Assert
+      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
+
+      int actualOffset = actualByteReader.offset;
+      int expectedOffset = 0;
+
+      expect(actualOffset, expectedOffset);
+    });
+
+    test('Should [throw Exception] when attempting to read past the third byte', () {
+      // Arrange
+      ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0xFF, 0xFF, 0xFF]));
+
+      // Assert
+      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
+
+      int actualOffset = actualByteReader.offset;
+      int expectedOffset = 0;
+
+      expect(actualOffset, expectedOffset);
     });
   });
 }

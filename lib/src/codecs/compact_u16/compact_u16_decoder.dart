@@ -18,6 +18,7 @@ class CompactU16Decoder {
     try {
       for (int i = 0; i < _maxCompactU16EncodingLength; i++) {
         int elem = byteReader.shiftRight();
+        size++;
         if (elem == 0 && i != 0) {
           throw Exception('Zero byte found beyond first position');
         }
@@ -25,18 +26,10 @@ class CompactU16Decoder {
           throw Exception('Attempted to read past the third byte');
         }
         value |= (elem & 0x7F) << shift;
-        size++;
         shift += 7;
         if ((elem & 0x80) == 0) {
           break;
         }
-      }
-
-      if (size == 0 || size > _maxCompactU16EncodingLength) {
-        throw Exception('Invalid CompactU16 size: $size');
-      }
-      if (value < 0 || value > 0xFFFF) {
-        throw Exception('Invalid CompactU16 length: $value');
       }
     } catch (e) {
       byteReader.shiftLeftBy(size);
