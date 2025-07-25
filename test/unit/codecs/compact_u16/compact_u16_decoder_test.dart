@@ -106,12 +106,10 @@ void main() {
       ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0x0]));
 
       // Assert
-      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
-
-      int actualOffset = actualByteReader.offset;
       int expectedOffset = 0;
 
-      expect(actualOffset, expectedOffset);
+      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
+      expect(actualByteReader.offset, expectedOffset);
     });
 
     test('Should [throw Exception] when attempting to read past the third byte', () {
@@ -119,12 +117,10 @@ void main() {
       ByteReader actualByteReader = ByteReader(Uint8List.fromList(<int>[0xFF, 0xFF, 0xFF, 0xFF]));
 
       // Assert
-      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
-
-      int actualOffset = actualByteReader.offset;
       int expectedOffset = 0;
 
-      expect(actualOffset, expectedOffset);
+      expect(() => CompactU16Decoder.decode(actualByteReader), throwsException);
+      expect(actualByteReader.offset, expectedOffset);
     });
   });
 }
