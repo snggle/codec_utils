@@ -1,6 +1,6 @@
 name: codec_utils
 description: "Dart package containing utility methods for data encoding and decoding"
-version: 0.0.6
+version: 0.0.7
 publish_to: none
 
 environment:
