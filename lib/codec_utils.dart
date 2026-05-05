@@ -1,5 +1,12 @@
 library codec_utils;
 
+/// The [Base32Decoder] class is designed for decoding data using the Base32 encoding scheme.
+/// Usage:
+///  ```
+///  Uint8List decodedBase32 = Base32Decoder.decode("ONXGOZ3MMU======");
+///  ```
+export 'src/codecs/base/base32_decoder.dart';
+
 /// The [Base58Codec] class is designed for encoding data using the Base58 encoding scheme.
 /// Usage:
 ///  ```
