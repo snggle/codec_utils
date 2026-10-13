@@ -1,5 +1,6 @@
 export 'a_cbor_tagged_object.dart';
 export 'cbor_special_tag.dart';
+export 'cose/cbor_cose_public_key.dart';
 export 'crypto/cbor_crypto_coin_info.dart';
 export 'crypto/cbor_crypto_hd_key.dart';
 export 'crypto/cbor_crypto_keypath.dart';
@@ -11,3 +12,4 @@ export 'ethereum/metadata/cbor_eth_sign_data_type.dart';
 export 'solana/cbor_sol_sign_request.dart';
 export 'solana/cbor_sol_signature.dart';
 export 'solana/metadata/cbor_sol_sign_data_type.dart';
+export 'webauthn/cbor_attestation_object.dart';
