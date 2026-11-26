@@ -21,7 +21,7 @@ void main() {
 
     test('Should [return Uint8List] decoded from given [LOWERCASE Base32] [WITHOUT padding]', () {
       // Arrange
-      String actualBase32 = 'ONXGOZ3MMU';
+      String actualBase32 = 'onxgoz3mmu';
 
       // Act
       Uint8List actualDecodedData = Base32Decoder.decode(actualBase32);
