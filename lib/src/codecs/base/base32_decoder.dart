@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 /// The [Base32Decoder] class is designed for decoding data using the Base32 encoding scheme.
 class Base32Decoder {
-  static const String _alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  static const String _uppercaseAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  static const String _lowercaseAlphabet = 'abcdefghijklmnopqrstuvwxyz';
   static const Map<int, int> _paddingLengthPerRemainder = <int, int>{
     0: 0,
     2: 6,
@@ -21,22 +22,24 @@ class Base32Decoder {
       return Uint8List(0);
     }
 
-    String normalizedData = data.toUpperCase();
-    int paddingIndex = normalizedData.indexOf('=');
+    int paddingIndex = data.indexOf('=');
     bool paddingPresentBool = paddingIndex != -1;
-    String dataWithoutPadding = paddingPresentBool ? normalizedData.substring(0, paddingIndex) : normalizedData;
+    int dataWithoutPadding = paddingPresentBool ? paddingIndex : data.length;
 
     if (paddingPresentBool) {
-      _validatePadding(normalizedData, paddingIndex, dataWithoutPadding.length);
+      _validatePadding(data, paddingIndex);
     }
 
     List<int> decodedBytes = <int>[];
     int temporaryBuffer = 0;
     int validBitsInBuffer = 0;
 
-    for (int i = 0; i < dataWithoutPadding.length; i++) {
-      int charAlphabetIndex = _alphabet.indexOf(dataWithoutPadding[i]);
-      if (charAlphabetIndex == -1) {
+    for (int i = 0; i < dataWithoutPadding; i++) {
+      int standardAlphabetIndex = _uppercaseAlphabet.indexOf(data[i]);
+      int charAlphabetIndex = standardAlphabetIndex >= 0 ? standardAlphabetIndex : _lowercaseAlphabet.indexOf(data[i]);
+      bool invalidCharacterBool = charAlphabetIndex == -1;
+
+      if (invalidCharacterBool) {
         throw const FormatException('Invalid character in Base32 string');
       }
 
@@ -53,17 +56,18 @@ class Base32Decoder {
     return Uint8List.fromList(decodedBytes);
   }
 
-  static void _validatePadding(String normalizedData, int paddingIndex, int dataWithoutPadding) {
-    if (normalizedData.length % 8 != 0) {
+  static void _validatePadding(String data, int paddingIndex) {
+    bool invalidDataLengthBool = data.length % 8 != 0;
+    if (invalidDataLengthBool) {
       throw const FormatException('Invalid Base32 data length');
     }
 
-    String padding = normalizedData.substring(paddingIndex);
+    String padding = data.substring(paddingIndex);
     if (padding.contains(RegExp('[^=]'))) {
       throw const FormatException('Invalid padding characters in Base32 string');
     }
 
-    int remainder = dataWithoutPadding % 8;
+    int remainder = paddingIndex % 8;
     int? expectedPaddingLength = _paddingLengthPerRemainder[remainder];
     if (expectedPaddingLength == null || expectedPaddingLength != padding.length) {
       throw const FormatException('Invalid padding length in Base32 string');

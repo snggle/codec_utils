@@ -60,5 +60,29 @@ void main() {
       // Assert
       expect(() => Base32Decoder.decode(actualBase32), throwsFormatException);
     });
+
+    test('Should [throw FormatException] if [non-ASCII character uppercases to a Base32 letter]', () {
+      // Arrange
+      String actualBase32 = '\u017FA======';
+
+      // Assert
+      expect(() => Base32Decoder.decode(actualBase32), throwsA(isA<FormatException>()));
+    });
+
+    test('Should [throw FormatException] if [padded data length is not a multiple of eight]', () {
+      // Arrange
+      String actualBase32 = 'MY=====';
+
+      // Assert
+      expect(() => Base32Decoder.decode(actualBase32), throwsA(isA<FormatException>()));
+    });
+
+    test('Should [throw FormatException] if [padding count is invalid for the data length]', () {
+      // Arrange
+      String actualBase32 = 'MZX=====';
+
+      // Assert
+      expect(() => Base32Decoder.decode(actualBase32), throwsA(isA<FormatException>()));
+    });
   });
 }
